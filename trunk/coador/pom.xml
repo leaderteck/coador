@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>br.ufla</groupId>
-  <artifactId>coador</artifactId>
+  <groupId>org.coador</groupId>
+  <artifactId>coador-all</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>Coador, filtros para DAOs e afins</name>
   <description>Um projeto para servir de mecanismo padrão de filtro</description>
@@ -44,4 +44,10 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <distributionManagement>
+  	<snapshotRepository>
+  		<id>lemaf-snapshot</id>
+  		<url>http://lemaf.ufla.br/nexus/content/repositories/snapshots</url>
+  	</snapshotRepository>
+  </distributionManagement>
 </project>

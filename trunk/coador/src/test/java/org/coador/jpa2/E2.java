@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 
 @Entity
-public class E2Test {
+public class E2 {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "e2")
