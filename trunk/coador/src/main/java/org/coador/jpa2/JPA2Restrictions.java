@@ -2,6 +2,7 @@ package org.coador.jpa2;
 
 import javax.persistence.EntityManager;
 
+import org.coador.Conjunction;
 import org.coador.Criterion;
 import org.coador.Disjunction;
 import org.coador.Operand;
@@ -21,6 +22,21 @@ public class JPA2Restrictions implements Restrictions {
     @Override
     public Disjunction disjunction() {
         return new JPA2Disjunction();
+    }
+
+    @Override
+    public Conjunction conjunction() {
+        return new JPA2Conjuction();
+    }
+
+    @Override
+    public Criterion like(Operand o1, Operand o2) {
+        return new JPA2LikeCriterion(o1, o2, true);
+    }
+
+    @Override
+    public Criterion ilike(Operand o1, Operand o2) {
+        return new JPA2LikeCriterion(o1, o2, false);
     }
 
 }
