@@ -6,13 +6,14 @@
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 
     <class>org.coador.jpa2.E1Test</class>
+    <class>org.coador.jpa2.E2Test</class>
 
     <properties>
       <property name="openjpa.ConnectionURL" value="jdbc:h2:mem:CoadorJPA2;DB_CLOSE_DELAY=-1" />
       <property name="openjpa.ConnectionDriverName" value="org.h2.Driver" />
       <property name="openjpa.ConnectionUserName" value="user" />
       <property name="openjpa.ConnectionPassword" value="pass" />
-      <property name="openjpa.Log" value="DefaultLevel=TRACE" />
+      <property name="openjpa.Log" value="DefaultLevel=WARN, SQL=TRACE" />
     </properties>
   </persistence-unit>
 </persistence>

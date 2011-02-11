@@ -67,7 +67,7 @@ public class JPA2Criteria<T> implements Criteria<T> {
     }
 
     public <Type> Literal<Type> literal(Type value) {
-        return new JPA2Literal<Type>(cb.literal(value));
+        return new JPA2Literal<Type>(value);
     }
 
     @Override

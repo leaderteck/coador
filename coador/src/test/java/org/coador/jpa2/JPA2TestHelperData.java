@@ -10,6 +10,8 @@ public class JPA2TestHelperData {
         for (int i = 1; i < 1000; i++) {
             E1Test e = new E1Test();
             e.setName("John " + i);
+            e.setYear(i);
+            e.setE2(new E2Test());
             em.persist(e);
         }
         em.getTransaction().commit();
