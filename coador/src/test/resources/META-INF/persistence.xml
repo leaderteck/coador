@@ -5,8 +5,8 @@
   <persistence-unit name="CoadorJPA2Test">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 
-    <class>org.coador.jpa2.E1Test</class>
-    <class>org.coador.jpa2.E2Test</class>
+    <class>org.coador.jpa2.E1</class>
+    <class>org.coador.jpa2.E2</class>
 
     <properties>
       <property name="openjpa.ConnectionURL" value="jdbc:h2:mem:CoadorJPA2;DB_CLOSE_DELAY=-1" />

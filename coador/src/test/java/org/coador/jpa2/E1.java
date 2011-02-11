@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
 @Entity
-public class E1Test {
+public class E1 {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "e1")
@@ -17,7 +17,7 @@ public class E1Test {
     private Integer id;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    private E2Test e2;
+    private E2 e2;
 
     public Integer getId() {
         return id;
@@ -26,7 +26,7 @@ public class E1Test {
     private String name;
     private Integer year;
 
-    public E2Test getE2() {
+    public E2 getE2() {
         return e2;
     }
 
@@ -38,7 +38,7 @@ public class E1Test {
         return year;
     }
 
-    public void setE2(E2Test e2) {
+    public void setE2(E2 e2) {
         this.e2 = e2;
     }
 
