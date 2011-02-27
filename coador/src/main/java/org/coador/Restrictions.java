@@ -8,8 +8,10 @@ public interface Restrictions {
 
     Criterion eq(Operand o1, Operand o2);
 
-    Criterion like(Operand o1, Operand o2);
-
     Criterion ilike(Operand o1, Operand o2);
+
+    Criterion le(Operand o1, Operand o2);
+
+    Criterion like(Operand o1, Operand o2);
 
 }

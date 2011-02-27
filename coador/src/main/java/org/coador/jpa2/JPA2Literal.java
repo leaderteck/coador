@@ -13,16 +13,14 @@ public class JPA2Literal<T> extends JPA2Operand implements Literal<T> {
         this.literal = literal;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <E> Expression<E> getExpression(CriteriaBuilder cb) {
-        return (Expression<E>) cb.literal(literal);
+    public Expression<?> getExpression(CriteriaBuilder cb) {
+        return cb.literal(literal);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <E> Expression<E> getLowerExpression(CriteriaBuilder cb) {
-        return (Expression<E>) cb.literal(literal.toString().toLowerCase());
+    public Expression<?> getLowerExpression(CriteriaBuilder cb) {
+        return cb.literal(literal.toString().toLowerCase());
     }
 
 }

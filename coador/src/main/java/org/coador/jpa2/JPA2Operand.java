@@ -7,7 +7,7 @@ import org.coador.Operand;
 
 public abstract class JPA2Operand implements Operand {
 
-    public abstract <T> Expression<T> getExpression(CriteriaBuilder cb);
+    public abstract Expression<?> getExpression(CriteriaBuilder cb);
 
-    public abstract <T> Expression<T> getLowerExpression(CriteriaBuilder cb);
+    public abstract Expression<?> getLowerExpression(CriteriaBuilder cb);
 }

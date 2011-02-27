@@ -19,60 +19,60 @@ import org.coador.Restrictions;
 
 public class JPA2Criteria<T> implements Criteria<T> {
 
-    private EntityManager entityManager;
-    private Class<T> clazz;
-    private List<JPA2Criterion> criterionList = new LinkedList<JPA2Criterion>();
-    private CriteriaBuilder cb;
-    private CriteriaQuery<T> criteria;
-    private Root<T> root;
+	protected EntityManager entityManager;
+	protected Class<T> clazz;
+	private List<JPA2Criterion> criterionList = new LinkedList<JPA2Criterion>();
+	private CriteriaBuilder cb;
+	private CriteriaQuery<T> criteria;
+	private Root<T> root;
 
-    public JPA2Criteria(EntityManager entityManager, Class<T> clazz) {
-        this.entityManager = entityManager;
-        cb = entityManager.getCriteriaBuilder();
-        criteria = cb.createQuery(clazz);
-        root = criteria.from(clazz);
-    }
+	public JPA2Criteria(EntityManager entityManager, Class<T> clazz) {
+		this.entityManager = entityManager;
+		cb = entityManager.getCriteriaBuilder();
+		criteria = cb.createQuery(clazz);
+		root = criteria.from(clazz);
+	}
 
-    @Override
-    public Criteria<T> add(Criterion criterion) {
-        if (criterion instanceof JPA2Criterion)
-            criterionList.add((JPA2Criterion) criterion);
+	@Override
+	public Criteria<T> add(Criterion criterion) {
+		if (criterion instanceof JPA2Criterion)
+			criterionList.add((JPA2Criterion) criterion);
 
-        return this;
-    }
+		return this;
+	}
 
-    @Override
-    public Restrictions getRestrictions() {
-        return new JPA2Restrictions(entityManager, clazz);
-    }
+	@Override
+	public Restrictions getRestrictions() {
+		return new JPA2Restrictions(entityManager, clazz);
+	}
 
-    @Override
-    public List<T> list() {
-        TypedQuery<T> query = createJPAQuery();
-        return query.getResultList();
-    }
+	@Override
+	public List<T> list() {
+		TypedQuery<T> query = createJPAQuery();
+		return query.getResultList();
+	}
 
-    private TypedQuery<T> createJPAQuery() {
-        predicates();
-        return entityManager.createQuery(criteria);
-    }
+	private TypedQuery<T> createJPAQuery() {
+		List<Predicate> p = createPredicates();
+		criteria.where(p.toArray(new Predicate[p.size()]));
+		return entityManager.createQuery(criteria);
+	}
 
-    private void predicates() {
-        List<Predicate> ps = new ArrayList<Predicate>(criterionList.size());
-        for (JPA2Criterion criterion : criterionList) {
-            ps.add(criterion.predicate(cb));
-        }
+	private List<Predicate> createPredicates() {
+		List<Predicate> ps = new ArrayList<Predicate>(criterionList.size());
+		for (JPA2Criterion criterion : criterionList) {
+			ps.add(criterion.predicate(cb));
+		}
+		return ps;
+	}
 
-        criteria.where(ps.toArray(new Predicate[ps.size()]));
-    }
+	public <Type> Literal<Type> literal(Type value) {
+		return new JPA2Literal<Type>(value);
+	}
 
-    public <Type> Literal<Type> literal(Type value) {
-        return new JPA2Literal<Type>(value);
-    }
-
-    @Override
-    public <Type> Property<Type> property(String propertyName) {
-        return new JPA2Property<Type>(propertyName, root.get(propertyName));
-    }
+	@Override
+	public <Type> Property<Type> property(String propertyName) {
+		return new JPA2Property<Type>(propertyName, root.get(propertyName));
+	}
 
 }
