@@ -39,4 +39,9 @@ public class JPA2Restrictions implements Restrictions {
         return new JPA2LikeCriterion(o1, o2, false);
     }
 
+    @Override
+    public Criterion le(Operand o1, Operand o2) {
+        return new JPA2LECriterion(o1, o2);
+    }
+
 }

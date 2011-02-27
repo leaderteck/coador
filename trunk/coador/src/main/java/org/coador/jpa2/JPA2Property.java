@@ -14,17 +14,15 @@ public class JPA2Property<Type> extends JPA2Operand implements Property<Type> {
         this.path = path;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> Expression<T> getExpression(CriteriaBuilder cb) {
+    public Expression<?> getExpression(CriteriaBuilder cb) {
         // TODO Auto-generated method stub
-        return (Expression<T>) path;
+        return path;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> Expression<T> getLowerExpression(CriteriaBuilder cb) {
-        return (Expression<T>) path;
+    public Expression<?> getLowerExpression(CriteriaBuilder cb) {
+        return path;
     }
 
 }

@@ -26,15 +26,18 @@ public class JPA2LikeCriterion extends JPA2Criterion {
         return insensitivePredicate(cb);
     }
 
+    @SuppressWarnings("unchecked")
     private Predicate insensitivePredicate(CriteriaBuilder cb) {
-        Expression<String> l1 = cb.lower(o1.<String> getExpression(cb));
+        Expression<String> l1 = cb.lower((Expression<String>) o1
+                .getExpression(cb));
 
-        return cb.like(l1, o2.<String> getLowerExpression(cb));
+        return cb.like(l1, (Expression<String>) o2.getLowerExpression(cb));
     }
 
+    @SuppressWarnings("unchecked")
     private Predicate sensitivePredicate(CriteriaBuilder cb) {
-        return cb.like(o1.<String> getExpression(cb),
-                o2.<String> getExpression(cb));
+        return cb.like((Expression<String>) o1.getExpression(cb),
+                (Expression<String>) o2.getExpression(cb));
     }
 
 }
