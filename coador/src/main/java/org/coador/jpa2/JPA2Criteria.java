@@ -28,6 +28,7 @@ public class JPA2Criteria<T> implements Criteria<T> {
 
     public JPA2Criteria(EntityManager entityManager, Class<T> clazz) {
         this.entityManager = entityManager;
+        this.clazz = clazz;
         cb = entityManager.getCriteriaBuilder();
         criteria = cb.createQuery(clazz);
         root = criteria.from(clazz);
@@ -54,7 +55,12 @@ public class JPA2Criteria<T> implements Criteria<T> {
     private TypedQuery<T> createJPAQuery() {
         List<Predicate> p = createPredicates();
         criteria.where(p.toArray(new Predicate[p.size()]));
-        return entityManager.createQuery(criteria);
+        try {
+            return entityManager.createQuery(criteria);
+        } finally {
+            criteria = cb.createQuery(clazz);
+            root = criteria.from(clazz);
+        }
     }
 
     private List<Predicate> createPredicates() {
@@ -72,6 +78,12 @@ public class JPA2Criteria<T> implements Criteria<T> {
     @Override
     public <Type> Property<Type> property(String propertyName) {
         return new JPA2Property<Type>(propertyName, root.get(propertyName));
+    }
+
+    @Override
+    public Criteria<T> remove(Criterion criterion) {
+        criterionList.remove(criterion);
+        return this;
     }
 
 }

@@ -21,4 +21,9 @@ public class JPA2SpatialRestrictions extends JPA2Restrictions implements
         return new JPA2Contains(new JPASpatialOperand(o1), o2);
     }
 
+    @Override
+    public Criterion intersects(Geometry o1, Operand o2) {
+        return new JPA2Intersects(new JPASpatialOperand(o1), o2);
+    }
+
 }
