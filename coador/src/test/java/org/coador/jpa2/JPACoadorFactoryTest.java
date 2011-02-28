@@ -39,7 +39,7 @@ public class JPACoadorFactoryTest {
         criteria.add(restrictions.eq(criteria.property("name"),
                 criteria.literal(name)));
 
-        List<E1> list = criteria.list();
+        List<E1> list = coadorProvider.list(criteria);
         Assert.assertFalse("O resultado não deveria estar vazio",
                 list.isEmpty());
         for (E1 e1 : list) {
@@ -58,7 +58,7 @@ public class JPACoadorFactoryTest {
         d.add(r.eq(criteria.property("name"), criteria.literal(name1))).add(
                 r.eq(criteria.property("name"), criteria.literal(name2)));
 
-        List<E1> list = criteria.add(d).list();
+        List<E1> list = coadorProvider.list(criteria.add(d));
         Assert.assertFalse("Não deveria estar vazio", list.isEmpty());
     }
 
@@ -74,7 +74,7 @@ public class JPACoadorFactoryTest {
         cj.add(r.eq(c.property("name"), c.literal(name))).add(
                 r.eq(c.property("year"), c.literal(year)));
 
-        List<E1> list = c.add(cj).list();
+        List<E1> list = coadorProvider.list(c.add(cj));
         Assert.assertFalse("Não quero listas vazias", list.isEmpty());
 
         for (E1 e : list) {
@@ -91,20 +91,20 @@ public class JPACoadorFactoryTest {
 
         c.add(r.like(c.property("name"), c.literal(name)));
 
-        List<E1> list = c.list();
+        List<E1> list = coadorProvider.list(c);
 
         Assert.assertEquals("Eu esperava algo diferente", 111, list.size());
 
         c = coadorProvider.createCriteria(E1.class);
         c.add(r.ilike(c.property("name"), c.literal(name = "JoHn 1%")));
 
-        list = c.list();
+        list = coadorProvider.list(c);
         Assert.assertEquals("Eu esperava algo diferente", 111, list.size());
 
         c = coadorProvider.createCriteria(E1.class);
         c.add(r.like(c.property("name"), c.literal(name)));
 
-        list = c.list();
+        list = coadorProvider.list(c);
         Assert.assertEquals("Aqui eu queria uma lista vazia", 0, list.size());
     }
 
@@ -117,7 +117,7 @@ public class JPACoadorFactoryTest {
 
         c.add(r.eq(c.property("e2"), c.literal(e2)));
 
-        List<E1> list = c.list();
+        List<E1> list = coadorProvider.list(c);
 
     }
 
@@ -134,7 +134,7 @@ public class JPACoadorFactoryTest {
 
         c.add(cj);
 
-        List<E1> list = c.list();
+        List<E1> list = coadorProvider.list(c);
 
         Assert.assertEquals("Epa!", 1, list.size());
 

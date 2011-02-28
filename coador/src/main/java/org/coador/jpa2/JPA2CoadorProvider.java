@@ -1,5 +1,7 @@
 package org.coador.jpa2;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import org.coador.CoadorProvider;
@@ -23,6 +25,11 @@ public class JPA2CoadorProvider implements CoadorProvider {
     @Override
     public <T> SpatialCriteria<T> createSpatialCriteria(Class<T> clazz) {
         return new JPA2SpatialCriteria<T>(entityManager, clazz);
+    }
+
+    @Override
+    public <T> List<T> list(Criteria<T> criteria) {
+        return ((JPA2Criteria<T>) criteria).list();
     }
 
 }
