@@ -5,4 +5,5 @@ import org.coador.Criteria;
 public interface SpatialCriteria<T> extends Criteria<T> {
 
     SpatialRestrictions getRestrictions();
+
 }

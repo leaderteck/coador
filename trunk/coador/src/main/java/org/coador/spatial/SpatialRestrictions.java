@@ -10,4 +10,6 @@ public interface SpatialRestrictions extends Restrictions {
 
     Criterion contains(Geometry o1, Operand o2);
 
+    Criterion intersects(Geometry o1, Operand o2);
+
 }
