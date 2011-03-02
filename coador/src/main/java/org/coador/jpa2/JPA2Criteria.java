@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -25,6 +26,7 @@ public class JPA2Criteria<T> implements Criteria<T> {
     private CriteriaBuilder cb;
     private CriteriaQuery<T> criteria;
     private Root<T> root;
+    private JPA2Restrictions restrictions;
 
     public JPA2Criteria(EntityManager entityManager, Class<T> clazz) {
         this.entityManager = entityManager;
@@ -44,7 +46,10 @@ public class JPA2Criteria<T> implements Criteria<T> {
 
     @Override
     public Restrictions getRestrictions() {
-        return new JPA2Restrictions(entityManager, clazz);
+        if (restrictions == null)
+            restrictions = new JPA2Restrictions(entityManager, clazz);
+
+        return restrictions;
     }
 
     public List<T> list() {
@@ -77,7 +82,17 @@ public class JPA2Criteria<T> implements Criteria<T> {
 
     @Override
     public <Type> Property<Type> property(String propertyName) {
-        return new JPA2Property<Type>(propertyName, root.get(propertyName));
+        return new JPA2Property<Type>(propertyName, navigate(propertyName));
+    }
+
+    private Path<Object> navigate(String propertyName) {
+        String[] ps = propertyName.split("\\.");
+
+        Path<Object> t = root.get(ps[0]);
+        for (int i = 1; i < ps.length; i++)
+            t = t.get(ps[i]);
+
+        return t;
     }
 
     @Override
