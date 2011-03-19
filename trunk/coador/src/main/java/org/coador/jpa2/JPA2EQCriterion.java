@@ -19,4 +19,5 @@ public class JPA2EQCriterion extends JPA2Criterion {
     public Predicate predicate(CriteriaBuilder cb) {
         return cb.equal(op1.getExpression(cb), op2.getExpression(cb));
     }
+
 }

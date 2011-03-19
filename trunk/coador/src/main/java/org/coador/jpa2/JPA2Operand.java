@@ -10,4 +10,5 @@ public abstract class JPA2Operand implements Operand {
     public abstract Expression<?> getExpression(CriteriaBuilder cb);
 
     public abstract Expression<?> getLowerExpression(CriteriaBuilder cb);
+
 }

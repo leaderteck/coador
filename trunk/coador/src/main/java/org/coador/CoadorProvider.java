@@ -11,4 +11,6 @@ public interface CoadorProvider {
     <T> SpatialCriteria<T> createSpatialCriteria(Class<T> clazz);
 
     <T> List<T> list(Criteria<T> criteria);
+
+    <T> T singleResult(Criteria<T> criteria);
 }
