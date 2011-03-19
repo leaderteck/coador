@@ -32,4 +32,9 @@ public class JPA2CoadorProvider implements CoadorProvider {
         return ((JPA2Criteria<T>) criteria).list();
     }
 
+    @Override
+    public <T> T singleResult(Criteria<T> criteria) {
+        return ((JPA2Criteria<T>) criteria).singleResult();
+    }
+
 }

@@ -44,4 +44,19 @@ public class JPA2Restrictions implements Restrictions {
         return new JPA2LECriterion(o1, o2);
     }
 
+    @Override
+    public Criterion in(Operand o1, Object... values) {
+        return new JPA2In(o1, values);
+    }
+
+    @Override
+    public Criterion neq(Operand o1, Operand o2) {
+        return new JPA2NEQCriterion(o1, o2);
+    }
+
+    @Override
+    public Criterion ge(Operand o1, Operand o2) {
+        return new JPA2GECriterion(o1, o2);
+    }
+
 }
