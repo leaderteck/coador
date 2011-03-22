@@ -149,10 +149,14 @@ public class JPA2Criteria<T> implements Criteria<T> {
 
     @Override
     public Criteria<T> newCriteria() {
-        JPA2Criteria<T> newC = new JPA2Criteria<T>(entityManager, clazz);
+        JPA2Criteria<T> newC = newCriteriaObject();
         newC.criterionList.addAll(criterionList);
         newC.orderList.addAll(orderList);
         return newC;
+    }
+
+    protected JPA2Criteria<T> newCriteriaObject() {
+        return new JPA2Criteria<T>(entityManager, clazz);
     }
 
 }

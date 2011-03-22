@@ -6,4 +6,7 @@ public interface SpatialCriteria<T> extends Criteria<T> {
 
     SpatialRestrictions getRestrictions();
 
+    @Override
+    public SpatialCriteria<T> newCriteria();
+
 }
