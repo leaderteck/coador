@@ -18,4 +18,13 @@ public class JPA2SpatialCriteria<T> extends JPA2Criteria<T> implements
         return new JPA2SpatialRestrictions(entityManager, clazz);
     }
 
+    public SpatialCriteria<T> newCriteria() {
+        return (SpatialCriteria<T>) super.newCriteria();
+    }
+
+    @Override
+    protected JPA2Criteria<T> newCriteriaObject() {
+        return new JPA2SpatialCriteria<T>(entityManager, clazz);
+    }
+
 }

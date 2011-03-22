@@ -19,7 +19,7 @@ public class JPA2GECriterion extends JPA2Criterion {
     @SuppressWarnings("unchecked")
     @Override
     public Predicate predicate(CriteriaBuilder cb) {
-        return cb.lessThanOrEqualTo(
+        return cb.greaterThanOrEqualTo(
                 (Expression<Comparable<Object>>) o1.getExpression(cb),
                 (Expression<Comparable<Object>>) o2.getExpression(cb));
     }
