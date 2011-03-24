@@ -1,6 +1,5 @@
 package org.coador;
 
-
 public interface Criteria<T> extends Cloneable {
 
     Criteria<T> add(Criterion criterion);
@@ -22,5 +21,7 @@ public interface Criteria<T> extends Cloneable {
     Criteria<T> remove(Criterion criterion);
 
     Criteria<T> newCriteria();
+
+    void setMaxResult(int limit);
 
 }
