@@ -2,6 +2,7 @@ package org.coador.jpa2;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.coador.CoadorPropertyFixer;
 import org.coador.Criteria;
 import org.coador.Criterion;
 import org.coador.Literal;
@@ -26,24 +28,33 @@ public class JPA2Criteria<T> implements Criteria<T> {
     private CriteriaBuilder cb;
     protected Class<T> clazz;
     private CriteriaQuery<T> criteria;
-    private List<JPA2Criterion> criterionList = new LinkedList<JPA2Criterion>();
+    private Deque<JPA2Criterion> criterionDeque = new LinkedList<JPA2Criterion>();
     protected EntityManager entityManager;
     private List<JPA2Order> orderList = new LinkedList<JPA2Order>();
-    private JPA2Restrictions restrictions;
+    protected JPA2Restrictions restrictions;
     private Root<T> root;
+    private int limit = 0;
+    protected CoadorPropertyFixer propertyFixer = CoadorPropertyFixer.NOP;
 
-    public JPA2Criteria(EntityManager entityManager, Class<T> clazz) {
+    public JPA2Criteria(EntityManager entityManager, Class<T> clazz,
+            CoadorPropertyFixer propertyFixer) {
         this.entityManager = entityManager;
         this.clazz = clazz;
+        this.propertyFixer = propertyFixer;
         cb = entityManager.getCriteriaBuilder();
         criteria = cb.createQuery(clazz);
         root = criteria.from(clazz);
+        updateAlias();
+    }
+
+    private void updateAlias() {
+        root = (Root<T>) root.alias(clazz.getSimpleName().toLowerCase());
     }
 
     @Override
     public Criteria<T> add(Criterion criterion) {
         if (criterion instanceof JPA2Criterion)
-            criterionList.add((JPA2Criterion) criterion);
+            criterionDeque.addFirst((JPA2Criterion) criterion);
 
         return this;
     }
@@ -70,12 +81,13 @@ public class JPA2Criteria<T> implements Criteria<T> {
         } finally {
             criteria = cb.createQuery(clazz);
             root = criteria.from(clazz);
+            updateAlias();
         }
     }
 
     private List<Predicate> createPredicates() {
-        List<Predicate> ps = new ArrayList<Predicate>(criterionList.size());
-        for (JPA2Criterion criterion : criterionList) {
+        List<Predicate> ps = new ArrayList<Predicate>(criterionDeque.size());
+        for (JPA2Criterion criterion : criterionDeque) {
             ps.add(criterion.predicate(cb));
         }
         return ps;
@@ -114,6 +126,9 @@ public class JPA2Criteria<T> implements Criteria<T> {
 
     public List<T> list() {
         TypedQuery<T> query = createJPAQuery();
+        if (limit > 0)
+            query.setMaxResults(limit);
+
         return query.getResultList();
     }
 
@@ -123,10 +138,21 @@ public class JPA2Criteria<T> implements Criteria<T> {
 
     private Path<Object> navigate(String propertyName) {
         String[] ps = propertyName.split("\\.");
+        Path<Object> t;
 
-        Path<Object> t = root.get(ps[0]);
-        for (int i = 1; i < ps.length; i++)
-            t = t.get(ps[i]);
+        String pN = propertyFixer.fixProperty(ps[0], root.getJavaType());
+        if (pN != null && !pN.isEmpty())
+            t = root.get(pN);
+        else
+            t = root.get(ps[0]);
+
+        for (int i = 1; i < ps.length; i++) {
+            pN = propertyFixer.fixProperty(ps[i], t.getJavaType());
+            if (pN != null && !pN.isEmpty())
+                t = t.get(pN);
+            else
+                t = t.get(ps[i]);
+        }
 
         return t;
     }
@@ -138,7 +164,7 @@ public class JPA2Criteria<T> implements Criteria<T> {
 
     @Override
     public Criteria<T> remove(Criterion criterion) {
-        criterionList.remove(criterion);
+        criterionDeque.remove(criterion);
         return this;
     }
 
@@ -150,13 +176,19 @@ public class JPA2Criteria<T> implements Criteria<T> {
     @Override
     public Criteria<T> newCriteria() {
         JPA2Criteria<T> newC = newCriteriaObject();
-        newC.criterionList.addAll(criterionList);
+        newC.criterionDeque.addAll(criterionDeque);
         newC.orderList.addAll(orderList);
+        newC.limit = limit;
         return newC;
     }
 
     protected JPA2Criteria<T> newCriteriaObject() {
-        return new JPA2Criteria<T>(entityManager, clazz);
+        return new JPA2Criteria<T>(entityManager, clazz, propertyFixer);
+    }
+
+    @Override
+    public void setMaxResult(int limit) {
+        this.limit = limit;
     }
 
 }
