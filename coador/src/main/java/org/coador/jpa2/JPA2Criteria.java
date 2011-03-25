@@ -40,7 +40,8 @@ public class JPA2Criteria<T> implements Criteria<T> {
             CoadorPropertyFixer propertyFixer) {
         this.entityManager = entityManager;
         this.clazz = clazz;
-        this.propertyFixer = propertyFixer;
+        if (propertyFixer != null)
+            this.propertyFixer = propertyFixer;
         cb = entityManager.getCriteriaBuilder();
         criteria = cb.createQuery(clazz);
         root = criteria.from(clazz);
