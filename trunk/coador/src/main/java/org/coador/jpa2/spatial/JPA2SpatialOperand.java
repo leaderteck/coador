@@ -7,18 +7,21 @@ import org.coador.jpa2.JPA2Operand;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-public class JPASpatialOperand extends JPA2Operand {
+public class JPA2SpatialOperand extends JPA2Operand {
 
+    private static final String ST_GEOMFROMTEXT = "ST_GeomFromText";
     protected Geometry geometry;
 
-    public JPASpatialOperand(Geometry o1) {
+    public JPA2SpatialOperand(Geometry o1) {
         this.geometry = o1;
     }
 
     @Override
     public Expression<?> getExpression(CriteriaBuilder cb) {
-        return cb.literal("SRID=" + geometry.getSRID() + ";"
-                + geometry.toText());
+        return cb.function(ST_GEOMFROMTEXT, Geometry.class,
+                cb.literal(geometry.toText()), cb.literal(geometry.getSRID()));
+        // return cb.literal("SRID=" + geometry.getSRID() + ";"
+        // + geometry.toText());
     }
 
     @Override

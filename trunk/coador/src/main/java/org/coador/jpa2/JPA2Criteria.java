@@ -1,6 +1,7 @@
 package org.coador.jpa2;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -22,6 +23,7 @@ import org.coador.Operand;
 import org.coador.Order;
 import org.coador.Property;
 import org.coador.Restrictions;
+import org.coador.TimePeriod;
 
 public class JPA2Criteria<T> implements Criteria<T> {
 
@@ -190,6 +192,11 @@ public class JPA2Criteria<T> implements Criteria<T> {
     @Override
     public void setMaxResult(int limit) {
         this.limit = limit;
+    }
+
+    @Override
+    public TimePeriod period(Calendar dfI, Calendar dtf) {
+        return new JPA2TimePeriod(dfI, dtf);
     }
 
 }
