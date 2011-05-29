@@ -7,6 +7,7 @@ import org.coador.Criterion;
 import org.coador.Disjunction;
 import org.coador.Operand;
 import org.coador.Restrictions;
+import org.coador.TimePeriod;
 
 public class JPA2Restrictions implements Restrictions {
 
@@ -57,6 +58,11 @@ public class JPA2Restrictions implements Restrictions {
     @Override
     public Criterion ge(Operand o1, Operand o2) {
         return new JPA2GECriterion(o1, o2);
+    }
+
+    @Override
+    public Criterion intersects(Operand o1, TimePeriod period) {
+        return new JPA2TemporalOverlaps(o1, period);
     }
 
 }

@@ -13,9 +13,9 @@ public class JPA2Contains extends JPA2Criterion implements Criterion {
 
     private static final String ST_CONTAINS = "ST_Contains";
     private JPA2Operand operand;
-    private JPASpatialOperand o1;
+    private JPA2SpatialOperand o1;
 
-    public JPA2Contains(JPASpatialOperand o1, Operand o2) {
+    public JPA2Contains(JPA2SpatialOperand o1, Operand o2) {
         this.o1 = o1;
         this.operand = (JPA2Operand) o2;
     }
