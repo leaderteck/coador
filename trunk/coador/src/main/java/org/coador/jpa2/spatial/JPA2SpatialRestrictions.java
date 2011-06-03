@@ -1,6 +1,7 @@
 package org.coador.jpa2.spatial;
 
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.Root;
 
 import org.coador.Criterion;
 import org.coador.Operand;
@@ -12,7 +13,8 @@ import com.vividsolutions.jts.geom.Geometry;
 public class JPA2SpatialRestrictions extends JPA2Restrictions implements
         SpatialRestrictions {
 
-    public JPA2SpatialRestrictions(EntityManager entityManager, Class<?> clazz) {
+    public JPA2SpatialRestrictions(EntityManager entityManager, Class<?> clazz,
+            Root<Object> root) {
         super(entityManager, clazz);
     }
 

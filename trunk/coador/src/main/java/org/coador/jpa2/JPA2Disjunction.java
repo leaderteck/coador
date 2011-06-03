@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.coador.Criterion;
 import org.coador.Disjunction;
@@ -23,10 +24,10 @@ public class JPA2Disjunction extends JPA2Criterion implements Disjunction {
     }
 
     @Override
-    public Predicate predicate(CriteriaBuilder cb) {
+    public Predicate predicate(CriteriaBuilder cb, Root<?> root) {
         List<Predicate> list = new ArrayList<Predicate>(criterionList.size());
         for (JPA2Criterion jpa2c : criterionList)
-            list.add(jpa2c.predicate(cb));
+            list.add(jpa2c.predicate(cb, root));
 
         return cb.or(list.toArray(new Predicate[list.size()]));
     }

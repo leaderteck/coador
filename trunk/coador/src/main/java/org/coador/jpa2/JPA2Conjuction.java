@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.coador.Conjunction;
 import org.coador.Criterion;
@@ -23,10 +24,10 @@ public class JPA2Conjuction extends JPA2Criterion implements Conjunction {
     }
 
     @Override
-    public Predicate predicate(CriteriaBuilder cb) {
+    public Predicate predicate(CriteriaBuilder cb, Root<?> root) {
         List<Predicate> pl = new ArrayList<Predicate>(list.size());
         for (JPA2Criterion c : list)
-            pl.add(c.predicate(cb));
+            pl.add(c.predicate(cb, root));
 
         return cb.and(pl.toArray(new Predicate[pl.size()]));
     }

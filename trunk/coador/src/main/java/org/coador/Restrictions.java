@@ -1,5 +1,7 @@
 package org.coador;
 
+import java.util.Collection;
+
 public interface Restrictions {
 
     Conjunction conjunction();
@@ -15,6 +17,9 @@ public interface Restrictions {
     Criterion in(Operand o1, Object... values);
 
     Criterion intersects(Operand o1, TimePeriod period);
+
+    Criterion intersects(Property<? extends Collection<?>> property,
+            Collection<?> collection);
 
     Criterion le(Operand o1, Operand o2);
 

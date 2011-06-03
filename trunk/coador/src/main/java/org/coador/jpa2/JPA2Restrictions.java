@@ -1,18 +1,20 @@
 package org.coador.jpa2;
 
+import java.util.Collection;
+
 import javax.persistence.EntityManager;
 
 import org.coador.Conjunction;
 import org.coador.Criterion;
 import org.coador.Disjunction;
 import org.coador.Operand;
+import org.coador.Property;
 import org.coador.Restrictions;
 import org.coador.TimePeriod;
 
 public class JPA2Restrictions implements Restrictions {
 
     public JPA2Restrictions(EntityManager entityManager, Class<?> clazz) {
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -63,6 +65,12 @@ public class JPA2Restrictions implements Restrictions {
     @Override
     public Criterion intersects(Operand o1, TimePeriod period) {
         return new JPA2TemporalOverlaps(o1, period);
+    }
+
+    @Override
+    public Criterion intersects(Property<? extends Collection<?>> property,
+            Collection<?> collection) {
+        return new JPA2PropertyIntersection(property, collection);
     }
 
 }
