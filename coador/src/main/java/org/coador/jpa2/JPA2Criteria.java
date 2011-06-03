@@ -32,11 +32,11 @@ public class JPA2Criteria<T> implements Criteria<T> {
     private CriteriaQuery<T> criteria;
     private Deque<JPA2Criterion> criterionDeque = new LinkedList<JPA2Criterion>();
     protected EntityManager entityManager;
-    private List<JPA2Order> orderList = new LinkedList<JPA2Order>();
-    protected JPA2Restrictions restrictions;
-    private Root<T> root;
     private int limit = 0;
+    private List<JPA2Order> orderList = new LinkedList<JPA2Order>();
     protected CoadorPropertyFixer propertyFixer = CoadorPropertyFixer.NOP;
+    protected JPA2Restrictions restrictions;
+    protected Root<T> root;
 
     public JPA2Criteria(EntityManager entityManager, Class<T> clazz,
             CoadorPropertyFixer propertyFixer) {
@@ -48,10 +48,6 @@ public class JPA2Criteria<T> implements Criteria<T> {
         criteria = cb.createQuery(clazz);
         root = criteria.from(clazz);
         updateAlias();
-    }
-
-    private void updateAlias() {
-        root = (Root<T>) root.alias(clazz.getSimpleName().toLowerCase());
     }
 
     @Override
@@ -91,7 +87,7 @@ public class JPA2Criteria<T> implements Criteria<T> {
     private List<Predicate> createPredicates() {
         List<Predicate> ps = new ArrayList<Predicate>(criterionDeque.size());
         for (JPA2Criterion criterion : criterionDeque) {
-            ps.add(criterion.predicate(cb));
+            ps.add(criterion.predicate(cb, root));
         }
         return ps;
     }
@@ -161,22 +157,6 @@ public class JPA2Criteria<T> implements Criteria<T> {
     }
 
     @Override
-    public <Type> Property<Type> property(String propertyName) {
-        return new JPA2Property<Type>(propertyName, navigate(propertyName));
-    }
-
-    @Override
-    public Criteria<T> remove(Criterion criterion) {
-        criterionDeque.remove(criterion);
-        return this;
-    }
-
-    public T singleResult() {
-        TypedQuery<T> query = createJPAQuery();
-        return query.getSingleResult();
-    }
-
-    @Override
     public Criteria<T> newCriteria() {
         JPA2Criteria<T> newC = newCriteriaObject();
         newC.criterionDeque.addAll(criterionDeque);
@@ -190,13 +170,33 @@ public class JPA2Criteria<T> implements Criteria<T> {
     }
 
     @Override
+    public TimePeriod period(Calendar dfI, Calendar dtf) {
+        return new JPA2TimePeriod(dfI, dtf);
+    }
+
+    @Override
+    public <Type> Property<Type> property(String propertyName) {
+        return new JPA2Property<Type>(propertyName, navigate(propertyName));
+    }
+
+    @Override
+    public Criteria<T> remove(Criterion criterion) {
+        criterionDeque.remove(criterion);
+        return this;
+    }
+
+    @Override
     public void setMaxResult(int limit) {
         this.limit = limit;
     }
 
-    @Override
-    public TimePeriod period(Calendar dfI, Calendar dtf) {
-        return new JPA2TimePeriod(dfI, dtf);
+    public T singleResult() {
+        TypedQuery<T> query = createJPAQuery();
+        return query.getSingleResult();
+    }
+
+    private void updateAlias() {
+        root = (Root<T>) root.alias(clazz.getSimpleName().toLowerCase());
     }
 
 }

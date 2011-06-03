@@ -27,4 +27,8 @@ public class JPA2Property<Type> extends JPA2Operand implements Property<Type> {
         return path;
     }
 
+    public String getName() {
+        return propertyName;
+    }
+
 }

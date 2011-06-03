@@ -2,6 +2,7 @@ package org.coador.jpa2;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.coador.Operand;
 
@@ -16,7 +17,7 @@ public class JPA2EQCriterion extends JPA2Criterion {
     }
 
     @Override
-    public Predicate predicate(CriteriaBuilder cb) {
+    public Predicate predicate(CriteriaBuilder cb, Root<?> root) {
         return cb.equal(op1.getExpression(cb), op2.getExpression(cb));
     }
 

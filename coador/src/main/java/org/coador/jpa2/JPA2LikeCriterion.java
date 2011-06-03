@@ -3,6 +3,7 @@ package org.coador.jpa2;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.coador.Operand;
 
@@ -19,7 +20,7 @@ public class JPA2LikeCriterion extends JPA2Criterion {
     }
 
     @Override
-    public Predicate predicate(CriteriaBuilder cb) {
+    public Predicate predicate(CriteriaBuilder cb, Root<?> root) {
         if (sensitive)
             return sensitivePredicate(cb);
 

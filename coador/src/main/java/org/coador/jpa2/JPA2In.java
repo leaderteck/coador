@@ -4,6 +4,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.coador.Operand;
 
@@ -18,7 +19,7 @@ public class JPA2In extends JPA2Criterion {
     }
 
     @Override
-    public Predicate predicate(CriteriaBuilder cb) {
+    public Predicate predicate(CriteriaBuilder cb, Root<?> root) {
         In<Object> in = cb.in(o1.getExpression(cb));
         for (Expression<Object> e : getExpressionValues(cb)) {
             in.value(e);
@@ -30,8 +31,13 @@ public class JPA2In extends JPA2Criterion {
     @SuppressWarnings("unchecked")
     private Expression<Object>[] getExpressionValues(CriteriaBuilder cb) {
         Expression<Object>[] result = new Expression[values.length];
-        for (int i = 0; i < values.length; i++)
-            result[i] = cb.literal(values[i]);
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] instanceof JPA2Operand)
+                result[i] = (Expression<Object>) ((JPA2Operand) values[i])
+                        .getExpression(cb);
+            else
+                result[i] = cb.literal(values[i]);
+        }
 
         return result;
     }
