@@ -24,8 +24,8 @@ public interface Criteria<T> extends Cloneable {
 
     Criteria<T> newCriteria();
 
-    void setMaxResult(int limit);
+    Criteria<T> setMaxResult(int limit);
 
     TimePeriod period(Calendar cI, Calendar cF);
-    
+
 }

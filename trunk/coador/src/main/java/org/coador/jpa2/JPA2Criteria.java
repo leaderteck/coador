@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class JPA2Criteria<T> implements Criteria<T> {
     protected CoadorPropertyFixer propertyFixer = CoadorPropertyFixer.NOP;
     protected JPA2Restrictions restrictions;
     protected Root<T> root;
+    private List<JPA2PostLoadFilter> postLoadListeners = new LinkedList<JPA2PostLoadFilter>();
 
     public JPA2Criteria(EntityManager entityManager, Class<T> clazz,
             CoadorPropertyFixer propertyFixer) {
@@ -54,6 +56,9 @@ public class JPA2Criteria<T> implements Criteria<T> {
     public Criteria<T> add(Criterion criterion) {
         if (criterion instanceof JPA2Criterion)
             criterionDeque.addFirst((JPA2Criterion) criterion);
+
+        if (criterion instanceof JPA2PostLoadFilter)
+            postLoadListeners.add((JPA2PostLoadFilter) criterion);
 
         return this;
     }
@@ -86,8 +91,11 @@ public class JPA2Criteria<T> implements Criteria<T> {
 
     private List<Predicate> createPredicates() {
         List<Predicate> ps = new ArrayList<Predicate>(criterionDeque.size());
+        Predicate p;
         for (JPA2Criterion criterion : criterionDeque) {
-            ps.add(criterion.predicate(cb, root));
+            p = criterion.predicate(cb, root);
+            if (p != null)
+                ps.add(p);
         }
         return ps;
     }
@@ -128,7 +136,22 @@ public class JPA2Criteria<T> implements Criteria<T> {
         if (limit > 0)
             query.setMaxResults(limit);
 
-        return query.getResultList();
+        List<T> result = query.getResultList();
+        if (!postLoadListeners.isEmpty())
+            postLoadProcess(result);
+
+        return result;
+    }
+
+    private void postLoadProcess(List<T> list) {
+        Iterator<T> it = list.iterator();
+        while (it.hasNext()) {
+            T object = it.next();
+
+            for (JPA2PostLoadFilter listener : postLoadListeners)
+                if (!listener.filter(object))
+                    it.remove();
+        }
     }
 
     public <Type> Literal<Type> literal(Type value) {
@@ -186,8 +209,9 @@ public class JPA2Criteria<T> implements Criteria<T> {
     }
 
     @Override
-    public void setMaxResult(int limit) {
+    public JPA2Criteria<T> setMaxResult(int limit) {
         this.limit = limit;
+        return this;
     }
 
     public T singleResult() {

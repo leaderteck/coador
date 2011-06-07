@@ -31,4 +31,18 @@ public class JPA2Property<Type> extends JPA2Operand implements Property<Type> {
         return propertyName;
     }
 
+    public Path<?> getPath() {
+        return path;
+    }
+
+    public Class<?> getOwnerClass() {
+        Path<?> parent = path.getParentPath();
+        if (parent == null)
+            parent = path;
+        else {
+            while (parent.getParentPath() != null)
+                parent = parent.getParentPath();
+        }
+        return parent.getModel().getBindableJavaType();
+    }
 }
