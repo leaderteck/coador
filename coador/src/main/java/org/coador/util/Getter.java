@@ -1,4 +1,4 @@
-package org.coador.jpa2;
+package org.coador.util;
 
 public interface Getter {
 

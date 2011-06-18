@@ -1,4 +1,5 @@
-package org.coador.jpa2;
+package org.coador.util;
+
 
 public abstract class AbstractGetter implements Getter {
 

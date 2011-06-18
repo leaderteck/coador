@@ -1,6 +1,7 @@
-package org.coador.jpa2;
+package org.coador.util;
 
 import java.lang.reflect.Method;
+
 
 public class MethodGetter extends AbstractGetter {
 
