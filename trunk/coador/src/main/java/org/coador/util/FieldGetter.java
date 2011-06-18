@@ -1,6 +1,7 @@
-package org.coador.jpa2;
+package org.coador.util;
 
 import java.lang.reflect.Field;
+
 
 public class FieldGetter extends AbstractGetter {
 

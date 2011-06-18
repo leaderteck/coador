@@ -7,6 +7,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.coador.Property;
+import org.coador.util.Getter;
+import org.coador.util.GetterFactory;
 
 public class JPA2PropertyIntersection extends JPA2Criterion implements
         JPA2PostLoadFilter {

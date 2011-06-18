@@ -1,9 +1,8 @@
-package org.coador.jpa2;
+package org.coador.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.coador.util.NoPropertyException;
 
 public class GetterFactory {
 
