@@ -28,4 +28,7 @@ public interface Criteria<T> extends Cloneable {
 
     TimePeriod period(Calendar cI, Calendar cF);
 
+    <C> ConstructedCriteria<T, C> construct(Class<? extends C> construcClass,
+            Operand... operand);
+
 }

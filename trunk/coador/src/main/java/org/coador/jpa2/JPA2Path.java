@@ -4,8 +4,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Path;
 
-import org.coador.Operand;
-
 public class JPA2Path<Type> extends JPA2Operand {
 
     private Path<Type> path;

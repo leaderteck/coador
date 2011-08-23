@@ -15,4 +15,6 @@ public interface CoadorProvider {
     <T> List<T> list(Criteria<T> criteria);
 
     <T> T singleResult(Criteria<T> criteria);
+
+    <T, C> List<C> list(ConstructedCriteria<T, C> constructedCriteria);
 }
