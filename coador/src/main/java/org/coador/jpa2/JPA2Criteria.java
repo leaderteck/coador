@@ -17,6 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.coador.CoadorPropertyFixer;
+import org.coador.ConstructedCriteria;
 import org.coador.Criteria;
 import org.coador.Criterion;
 import org.coador.Literal;
@@ -29,26 +30,31 @@ import org.coador.TimePeriod;
 public class JPA2Criteria<T> implements Criteria<T> {
 
     private CriteriaBuilder cb;
-    protected Class<T> clazz;
     private CriteriaQuery<T> criteria;
     private Deque<JPA2Criterion> criterionDeque = new LinkedList<JPA2Criterion>();
     protected EntityManager entityManager;
     private int limit = 0;
     private List<JPA2Order> orderList = new LinkedList<JPA2Order>();
+    private List<JPA2PostLoadFilter> postLoadListeners = new LinkedList<JPA2PostLoadFilter>();
     protected CoadorPropertyFixer propertyFixer = CoadorPropertyFixer.NOP;
     protected JPA2Restrictions restrictions;
-    protected Root<T> root;
-    private List<JPA2PostLoadFilter> postLoadListeners = new LinkedList<JPA2PostLoadFilter>();
+    protected Root<?> root;
+    protected Class<?> sourceClass;
+    protected Class<T> targetClass;
 
-    public JPA2Criteria(EntityManager entityManager, Class<T> clazz,
+    private JPA2Criteria() {
+        // TODO Auto-generated constructor stub
+    }
+
+    public JPA2Criteria(EntityManager entityManager, Class<T> targetClass,
             CoadorPropertyFixer propertyFixer) {
         this.entityManager = entityManager;
-        this.clazz = clazz;
+        this.sourceClass = this.targetClass = targetClass;
         if (propertyFixer != null)
             this.propertyFixer = propertyFixer;
         cb = entityManager.getCriteriaBuilder();
-        criteria = cb.createQuery(clazz);
-        root = criteria.from(clazz);
+        criteria = cb.createQuery(targetClass);
+        root = criteria.from(sourceClass);
         updateAlias();
     }
 
@@ -76,6 +82,12 @@ public class JPA2Criteria<T> implements Criteria<T> {
         return new JPA2Order(operand, true);
     }
 
+    @Override
+    public <C> ConstructedCriteria<T, C> construct(
+            Class<? extends C> construcClass, Operand... operand) {
+        return new JPA2ConstructedCriteria<T, C>(this, construcClass, operand);
+    }
+
     private TypedQuery<T> createJPAQuery() {
         List<Predicate> p = createPredicates();
         criteria.where(p.toArray(new Predicate[p.size()]));
@@ -83,8 +95,8 @@ public class JPA2Criteria<T> implements Criteria<T> {
         try {
             return entityManager.createQuery(criteria);
         } finally {
-            criteria = cb.createQuery(clazz);
-            root = criteria.from(clazz);
+            criteria = cb.createQuery(targetClass);
+            root = criteria.from(sourceClass);
             updateAlias();
         }
     }
@@ -105,9 +117,10 @@ public class JPA2Criteria<T> implements Criteria<T> {
         return new JPA2Order(operand, false);
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public Operand element() {
-        return new JPA2Path<T>(root);
+        return new JPA2Path(root);
     }
 
     private List<javax.persistence.criteria.Order> getOrdersBy() {
@@ -126,7 +139,7 @@ public class JPA2Criteria<T> implements Criteria<T> {
     @Override
     public Restrictions getRestrictions() {
         if (restrictions == null)
-            restrictions = new JPA2Restrictions(entityManager, clazz);
+            restrictions = new JPA2Restrictions(entityManager, targetClass);
 
         return restrictions;
     }
@@ -141,17 +154,6 @@ public class JPA2Criteria<T> implements Criteria<T> {
             postLoadProcess(result);
 
         return result;
-    }
-
-    private void postLoadProcess(List<T> list) {
-        Iterator<T> it = list.iterator();
-        while (it.hasNext()) {
-            T object = it.next();
-
-            for (JPA2PostLoadFilter listener : postLoadListeners)
-                if (!listener.filter(object))
-                    it.remove();
-        }
     }
 
     public <Type> Literal<Type> literal(Type value) {
@@ -189,12 +191,38 @@ public class JPA2Criteria<T> implements Criteria<T> {
     }
 
     protected JPA2Criteria<T> newCriteriaObject() {
-        return new JPA2Criteria<T>(entityManager, clazz, propertyFixer);
+        return new JPA2Criteria<T>(entityManager, targetClass, propertyFixer);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <C> JPA2Criteria<C> newCriteriaObject(
+            Class<? extends C> targetClass) {
+        JPA2Criteria<C> newC = new JPA2Criteria<C>();
+        newC.criterionDeque = (criterionDeque);
+        newC.orderList = (orderList);
+        newC.limit = limit;
+        newC.cb = cb;
+        newC.criteria = (CriteriaQuery<C>) cb.createQuery(targetClass);
+        newC.entityManager = entityManager;
+        newC.targetClass = (Class<C>) targetClass;
+        newC.sourceClass = sourceClass;
+        return newC;
     }
 
     @Override
     public TimePeriod period(Calendar dfI, Calendar dtf) {
         return new JPA2TimePeriod(dfI, dtf);
+    }
+
+    private void postLoadProcess(List<T> list) {
+        Iterator<T> it = list.iterator();
+        while (it.hasNext()) {
+            T object = it.next();
+
+            for (JPA2PostLoadFilter listener : postLoadListeners)
+                if (!listener.filter(object))
+                    it.remove();
+        }
     }
 
     @Override
@@ -219,8 +247,8 @@ public class JPA2Criteria<T> implements Criteria<T> {
         return query.getSingleResult();
     }
 
+    @SuppressWarnings("unchecked")
     private void updateAlias() {
-        root = (Root<T>) root.alias(clazz.getSimpleName().toLowerCase());
+        root = (Root<T>) root.alias(targetClass.getSimpleName().toLowerCase());
     }
-
 }

@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 
 import org.coador.CoadorPropertyFixer;
 import org.coador.CoadorProvider;
+import org.coador.ConstructedCriteria;
 import org.coador.Criteria;
 import org.coador.jpa2.spatial.JPA2SpatialCriteria;
 import org.coador.spatial.SpatialCriteria;
@@ -30,13 +31,13 @@ public class JPA2CoadorProvider implements CoadorProvider {
     }
 
     @Override
-    public <T> List<T> list(Criteria<T> criteria) {
-        return ((JPA2Criteria<T>) criteria).list();
+    public <T, C> List<C> list(ConstructedCriteria<T, C> constructedCriteria) {
+        return ((JPA2ConstructedCriteria<T, C>) constructedCriteria).list();
     }
 
     @Override
-    public <T> T singleResult(Criteria<T> criteria) {
-        return ((JPA2Criteria<T>) criteria).singleResult();
+    public <T> List<T> list(Criteria<T> criteria) {
+        return ((JPA2Criteria<T>) criteria).list();
     }
 
     @Override
@@ -44,6 +45,11 @@ public class JPA2CoadorProvider implements CoadorProvider {
         if (propertyFixer != null)
             this.propertyFixer = propertyFixer;
 
+    }
+
+    @Override
+    public <T> T singleResult(Criteria<T> criteria) {
+        return ((JPA2Criteria<T>) criteria).singleResult();
     }
 
 }
