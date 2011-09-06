@@ -10,11 +10,13 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CompoundSelection;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
 
 import org.coador.CoadorPropertyFixer;
 import org.coador.ConstructedCriteria;
@@ -196,16 +198,28 @@ public class JPA2Criteria<T> implements Criteria<T> {
 
     @SuppressWarnings("unchecked")
     protected <C> JPA2Criteria<C> newCriteriaObject(
-            Class<? extends C> targetClass) {
+            Class<? extends C> targetClass, Operand... operands) {
+
+        ArrayList<Selection<?>> selections = new ArrayList<Selection<?>>(
+                operands.length);
+        for (Operand operand : operands)
+            selections.add(((JPA2Operand) operand).getExpression(cb));
+
+        CompoundSelection<? extends C> cc = cb.construct(targetClass,
+                selections.toArray(new Selection[selections.size()]));
+
         JPA2Criteria<C> newC = new JPA2Criteria<C>();
         newC.criterionDeque = (criterionDeque);
         newC.orderList = (orderList);
         newC.limit = limit;
         newC.cb = cb;
-        newC.criteria = (CriteriaQuery<C>) cb.createQuery(targetClass);
+        newC.criteria = ((CriteriaQuery<C>) cb.createQuery(targetClass))
+                .select(cc);
         newC.entityManager = entityManager;
         newC.targetClass = (Class<C>) targetClass;
         newC.sourceClass = sourceClass;
+        newC.root = newC.criteria.from(sourceClass);
+        newC.updateAlias();
         return newC;
     }
 
@@ -249,6 +263,6 @@ public class JPA2Criteria<T> implements Criteria<T> {
 
     @SuppressWarnings("unchecked")
     private void updateAlias() {
-        root = (Root<T>) root.alias(targetClass.getSimpleName().toLowerCase());
+        root = (Root<T>) root.alias(sourceClass.getSimpleName().toLowerCase());
     }
 }

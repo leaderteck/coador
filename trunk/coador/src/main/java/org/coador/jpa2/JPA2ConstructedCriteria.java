@@ -12,10 +12,10 @@ public class JPA2ConstructedCriteria<T, C> implements ConstructedCriteria<T, C> 
     private Operand[] operands;
 
     public JPA2ConstructedCriteria(JPA2Criteria<T> jpa2Criteria,
-            Class<? extends C> construcClass, Operand... operand) {
-        this.criteria = jpa2Criteria.newCriteriaObject(construcClass);
+            Class<? extends C> construcClass, Operand... operands) {
+        this.criteria = jpa2Criteria.newCriteriaObject(construcClass, operands);
         this.targetClass = construcClass;
-        this.operands = operand;
+        this.operands = operands;
     }
 
     @Override
