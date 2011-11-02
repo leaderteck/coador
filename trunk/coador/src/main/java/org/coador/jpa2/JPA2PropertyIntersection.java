@@ -3,8 +3,8 @@ package org.coador.jpa2;
 import java.util.Collection;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.coador.Property;
 import org.coador.util.Getter;
@@ -29,7 +29,7 @@ public class JPA2PropertyIntersection extends JPA2Criterion implements
     }
 
     @Override
-    public Predicate predicate(CriteriaBuilder cb, Root<?> root) {
+    public Predicate predicate(CriteriaBuilder cb, From<?, ?> root) {
         return null;
     }
 

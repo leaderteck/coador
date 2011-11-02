@@ -3,8 +3,8 @@ package org.coador.jpa2;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.coador.Operand;
 
@@ -19,9 +19,9 @@ public class JPA2In extends JPA2Criterion {
     }
 
     @Override
-    public Predicate predicate(CriteriaBuilder cb, Root<?> root) {
-        In<Object> in = cb.in(o1.getExpression(cb));
-        for (Expression<Object> e : getExpressionValues(cb)) {
+    public Predicate predicate(CriteriaBuilder cb, From<?, ?> from) {
+        In<Object> in = cb.in(o1.getExpression(cb, from));
+        for (Expression<Object> e : getExpressionValues(cb, from)) {
             in.value(e);
         }
         return in;
@@ -29,12 +29,13 @@ public class JPA2In extends JPA2Criterion {
     }
 
     @SuppressWarnings("unchecked")
-    private Expression<Object>[] getExpressionValues(CriteriaBuilder cb) {
+    private Expression<Object>[] getExpressionValues(CriteriaBuilder cb,
+            From<?, ?> from) {
         Expression<Object>[] result = new Expression[values.length];
         for (int i = 0; i < values.length; i++) {
             if (values[i] instanceof JPA2Operand)
                 result[i] = (Expression<Object>) ((JPA2Operand) values[i])
-                        .getExpression(cb);
+                        .getExpression(cb, from);
             else
                 result[i] = cb.literal(values[i]);
         }

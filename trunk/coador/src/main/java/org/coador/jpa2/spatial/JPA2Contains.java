@@ -2,8 +2,8 @@ package org.coador.jpa2.spatial;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.coador.Criterion;
 import org.coador.Operand;
@@ -22,7 +22,7 @@ public class JPA2Contains extends JPA2Criterion implements Criterion {
     }
 
     @Override
-    public Predicate predicate(CriteriaBuilder cb, Root<?> root) {
+    public Predicate predicate(CriteriaBuilder cb, From<?, ?> root) {
         Expression<Boolean> p = cb.function(ST_CONTAINS, Boolean.class,
                 o1.getExpression(cb), operand.getExpression(cb));
         return cb.isTrue(p);

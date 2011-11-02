@@ -1,10 +1,13 @@
 package org.coador.jpa2;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
@@ -18,6 +21,9 @@ public class E1 {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     private E2 e2;
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    private List<E3> e3;
 
     public Integer getId() {
         return id;
@@ -48,6 +54,14 @@ public class E1 {
 
     public void setYear(Integer year) {
         this.year = year;
+    }
+
+    public void setE3(List<E3> e3) {
+        this.e3 = e3;
+    }
+
+    public List<E3> getE3() {
+        return e3;
     }
 
 }
