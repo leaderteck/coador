@@ -22,6 +22,7 @@ import org.coador.CoadorPropertyFixer;
 import org.coador.ConstructedCriteria;
 import org.coador.Criteria;
 import org.coador.Criterion;
+import org.coador.Join;
 import org.coador.Literal;
 import org.coador.Operand;
 import org.coador.Order;
@@ -35,6 +36,7 @@ public class JPA2Criteria<T> implements Criteria<T> {
     private CriteriaQuery<T> criteria;
     private Deque<JPA2Criterion> criterionDeque = new LinkedList<JPA2Criterion>();
     protected EntityManager entityManager;
+    private List<JPA2Join> joins = new LinkedList<JPA2Join>();
     private int limit = 0;
     private List<JPA2Order> orderList = new LinkedList<JPA2Order>();
     private List<JPA2PostLoadFilter> postLoadListeners = new LinkedList<JPA2PostLoadFilter>();
@@ -72,6 +74,11 @@ public class JPA2Criteria<T> implements Criteria<T> {
     }
 
     @Override
+    public void add(Join join) {
+        joins.add((JPA2Join) join);
+    }
+
+    @Override
     public Criteria<T> add(Order order) {
         if (order instanceof JPA2Order)
             orderList.add((JPA2Order) order);
@@ -92,6 +99,12 @@ public class JPA2Criteria<T> implements Criteria<T> {
 
     private TypedQuery<T> createJPAQuery() {
         List<Predicate> p = createPredicates();
+
+        if (!joins.isEmpty()) {
+            makeJoins(p);
+            criteria.distinct(true);
+        }
+
         criteria.where(p.toArray(new Predicate[p.size()]));
         criteria.orderBy(getOrdersBy());
         try {
@@ -100,6 +113,17 @@ public class JPA2Criteria<T> implements Criteria<T> {
             criteria = cb.createQuery(targetClass);
             root = criteria.from(sourceClass);
             updateAlias();
+        }
+    }
+
+    private void makeJoins(List<Predicate> predicates) {
+        int i = 0;
+        for (JPA2Join jpa2join : joins) {
+            javax.persistence.criteria.Join<?, ?> join = jpa2join.join(root,
+                    "join_" + (i++));
+            Predicate[] ps = jpa2join.createPredicates(join, cb, root);
+            for (Predicate p : ps)
+                predicates.add(p);
         }
     }
 
@@ -219,6 +243,7 @@ public class JPA2Criteria<T> implements Criteria<T> {
         newC.targetClass = (Class<C>) targetClass;
         newC.sourceClass = sourceClass;
         newC.root = newC.criteria.from(sourceClass);
+        newC.postLoadListeners.addAll(postLoadListeners);
         newC.updateAlias();
         return newC;
     }

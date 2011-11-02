@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import org.coador.Conjunction;
 import org.coador.Criterion;
 import org.coador.Disjunction;
+import org.coador.Join;
 import org.coador.Operand;
 import org.coador.Property;
 import org.coador.Restrictions;
@@ -71,6 +72,11 @@ public class JPA2Restrictions implements Restrictions {
     public Criterion intersects(Property<? extends Collection<?>> property,
             Collection<?> collection) {
         return new JPA2PropertyIntersection(property, collection);
+    }
+
+    @Override
+    public Join join(Property<?> property) {
+        return new JPA2Join(property);
     }
 
 }

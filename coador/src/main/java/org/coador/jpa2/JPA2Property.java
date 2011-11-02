@@ -11,6 +11,10 @@ public class JPA2Property<Type> extends JPA2Operand implements Property<Type> {
     private Path<Object> path;
     private String propertyName;
 
+    protected JPA2Property() {
+
+    }
+
     public JPA2Property(String propertyName, Path<Object> path) {
         this.path = path;
         this.propertyName = propertyName;
@@ -31,10 +35,6 @@ public class JPA2Property<Type> extends JPA2Operand implements Property<Type> {
         return propertyName;
     }
 
-    public Path<?> getPath() {
-        return path;
-    }
-
     public Class<?> getOwnerClass() {
         Path<?> parent = path.getParentPath();
         if (parent == null)
@@ -45,4 +45,9 @@ public class JPA2Property<Type> extends JPA2Operand implements Property<Type> {
         }
         return parent.getModel().getBindableJavaType();
     }
+
+    public Path<?> getPath() {
+        return path;
+    }
+
 }

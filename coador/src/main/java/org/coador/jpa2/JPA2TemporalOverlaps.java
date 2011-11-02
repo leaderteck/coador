@@ -2,8 +2,8 @@ package org.coador.jpa2;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.coador.Operand;
 import org.coador.TimePeriod;
@@ -29,7 +29,7 @@ public class JPA2TemporalOverlaps extends JPA2Criterion {
     }
 
     @Override
-    public Predicate predicate(CriteriaBuilder cb, Root<?> root) {
+    public Predicate predicate(CriteriaBuilder cb, From<?, ?> root) {
         Expression<Boolean> result = cb.function("overlaps", Boolean.class,
                 period.getExpression(cb), o1.getExpression(cb));
         return cb.isTrue(result);

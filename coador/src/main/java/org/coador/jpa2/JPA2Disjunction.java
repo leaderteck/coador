@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.coador.Criterion;
 import org.coador.Disjunction;
@@ -24,7 +24,7 @@ public class JPA2Disjunction extends JPA2Criterion implements Disjunction {
     }
 
     @Override
-    public Predicate predicate(CriteriaBuilder cb, Root<?> root) {
+    public Predicate predicate(CriteriaBuilder cb, From<?, ?> root) {
         List<Predicate> list = new ArrayList<Predicate>(criterionList.size());
         for (JPA2Criterion jpa2c : criterionList)
             list.add(jpa2c.predicate(cb, root));

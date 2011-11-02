@@ -31,4 +31,6 @@ public interface Criteria<T> extends Cloneable {
     <C> ConstructedCriteria<T, C> construct(Class<? extends C> construcClass,
             Operand... operand);
 
+    void add(Join join);
+
 }
