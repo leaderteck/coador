@@ -16,6 +16,8 @@ public interface Restrictions {
 
     Criterion in(Operand o1, Object... values);
 
+    Criterion notIn(Operand o1, Object... values);
+
     Criterion intersects(Operand o1, TimePeriod period);
 
     @Deprecated

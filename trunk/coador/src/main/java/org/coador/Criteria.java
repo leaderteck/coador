@@ -33,4 +33,5 @@ public interface Criteria<T> extends Cloneable {
 
     void add(Join join);
 
+    Operand count(Operand operand);
 }

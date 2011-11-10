@@ -244,6 +244,7 @@ public class JPA2Criteria<T> implements Criteria<T> {
         newC.sourceClass = sourceClass;
         newC.root = newC.criteria.from(sourceClass);
         newC.postLoadListeners.addAll(postLoadListeners);
+        newC.joins.addAll(joins);
         newC.updateAlias();
         return newC;
     }
@@ -289,5 +290,11 @@ public class JPA2Criteria<T> implements Criteria<T> {
     @SuppressWarnings("unchecked")
     private void updateAlias() {
         root = (Root<T>) root.alias(sourceClass.getSimpleName().toLowerCase());
+    }
+
+    @Override
+    public Operand count(Operand operand) {
+        return new JPA2Expression(cb.count(((JPA2Operand) operand)
+                .getExpression(cb)));
     }
 }

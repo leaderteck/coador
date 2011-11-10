@@ -54,6 +54,11 @@ public class JPA2Restrictions implements Restrictions {
     }
 
     @Override
+    public Criterion notIn(Operand o1, Object... values) {
+        return new JPA2NotIn(o1, values);
+    }
+
+    @Override
     public Criterion neq(Operand o1, Operand o2) {
         return new JPA2NEQCriterion(o1, o2);
     }

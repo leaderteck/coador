@@ -11,7 +11,7 @@ public abstract class JPA2Operand implements Operand {
     public abstract Expression<?> getExpression(CriteriaBuilder cb);
 
     public Expression<?> getExpression(CriteriaBuilder cb, From<?, ?> from) {
-        throw new UnsupportedOperationException();
+        return getExpression(cb);
     }
 
     public abstract Expression<?> getLowerExpression(CriteriaBuilder cb);

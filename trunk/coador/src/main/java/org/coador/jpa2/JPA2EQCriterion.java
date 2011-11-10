@@ -17,8 +17,9 @@ public class JPA2EQCriterion extends JPA2Criterion {
     }
 
     @Override
-    public Predicate predicate(CriteriaBuilder cb, From<?, ?> root) {
-        return cb.equal(op1.getExpression(cb), op2.getExpression(cb));
+    public Predicate predicate(CriteriaBuilder cb, From<?, ?> from) {
+        return cb.equal(op1.getExpression(cb, from),
+                op2.getExpression(cb, from));
     }
 
 }

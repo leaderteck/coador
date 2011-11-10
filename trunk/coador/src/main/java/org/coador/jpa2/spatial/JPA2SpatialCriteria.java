@@ -21,8 +21,8 @@ public class JPA2SpatialCriteria<T> extends JPA2Criteria<T> implements
     @Override
     public SpatialRestrictions getRestrictions() {
         if (restrictions == null)
-            restrictions = new JPA2SpatialRestrictions(entityManager, targetClass,
-                    root);
+            restrictions = new JPA2SpatialRestrictions(entityManager,
+                    targetClass, root);
 
         return (SpatialRestrictions) restrictions;
     }
@@ -33,7 +33,8 @@ public class JPA2SpatialCriteria<T> extends JPA2Criteria<T> implements
 
     @Override
     protected JPA2Criteria<T> newCriteriaObject() {
-        return new JPA2SpatialCriteria<T>(entityManager, targetClass, propertyFixer);
+        return new JPA2SpatialCriteria<T>(entityManager, targetClass,
+                propertyFixer);
     }
 
 }

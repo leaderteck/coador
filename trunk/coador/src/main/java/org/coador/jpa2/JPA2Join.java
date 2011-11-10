@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -32,9 +33,14 @@ public class JPA2Join implements Join {
         return this;
     }
 
-    public javax.persistence.criteria.Join<?, ?> join(Root<?> root, String alias) {
-        return (javax.persistence.criteria.Join<?, ?>) root.join(
-                property.getName()).alias(alias);
+    public javax.persistence.criteria.Join<?, ?> join(From<?, ?> from,
+            String alias) {
+        String[] ss = property.getName().split("\\.");
+        javax.persistence.criteria.Join<?, ?> join = from.join(ss[0]);
+        for (int i = 1; i < ss.length; i++)
+            join = join.join(ss[i]);
+
+        return (javax.persistence.criteria.Join<?, ?>) join.alias(alias);
     }
 
     public Predicate[] createPredicates(

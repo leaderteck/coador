@@ -108,6 +108,7 @@ public class JPACoadorFactoryTest {
         Assert.assertEquals("Aqui eu queria uma lista vazia", 0, list.size());
     }
 
+    @SuppressWarnings("unused")
     @Test
     public void testRel() {
 
